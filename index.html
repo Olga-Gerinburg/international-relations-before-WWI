@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="uk">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Назва вкладки -->
+<title>Міжнародні відносини | Інтерактив</title>
+
+<!-- Іконка вкладки (Favicon з емодзі глобуса) -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌍</text></svg>">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.577.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&amp;family=Playfair+Display:wght@600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --ink:#17212b; --paper:#f4efe4; --cream:#fffaf0; --gold:#c79643;
+      --red:#a83c35; --navy:#20394f; --muted:#6c746f; --line:#d8cfbd;
+      --ally:#477a58; --rival:#a83c35; --change:#b67b24; --neutral:#64748b;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:"Libre Franklin",sans-serif;color:var(--ink);background:var(--paper)}
+    h1,h2,h3{font-family:"Playfair Display",serif}
+    button{font:inherit}
+    .paper-grain{
+      background-color:var(--paper);
+      background-image:radial-gradient(rgba(45,34,20,.09) .7px,transparent .8px);
+      background-size:10px 10px;
+    }
+
+    .hero{
+      min-height:calc(70 * min(var(--vh, 1vh), 1vh));
+      background:linear-gradient(125deg,rgba(14,27,39,.96),rgba(30,57,79,.89)),url("https://images.pexels.com/photos/3115407/pexels-photo-3115407.jpeg?auto=compress&cs=tinysrgb&w=1920") center/cover;
+      color:#fffaf0;
+    }
+
+    .hero-rule{width:90px;height:3px;background:var(--gold)}
+    .section-kicker{letter-spacing:.16em;text-transform:uppercase;font-size:.74rem;font-weight:800;color:#9a6722}
+    .feature-card,.quiz-card,.relation-card{
+      background:rgba(255,250,240,.92); border:1px solid var(--line);
+      box-shadow:0 12px 30px rgba(56,42,20,.10);
+    }
+    .feature-card{transition:transform .2s,box-shadow .2s}
+    .feature-card:hover,.feature-card:focus-visible{transform:translateY(-5px);box-shadow:0 18px 34px rgba(56,42,20,.18)}
+    .number-stamp{font-family:"Playfair Display",serif;color:var(--gold);font-size:2.5rem;line-height:1}
+    .gallery-item{min-height:220px;overflow:hidden;position:relative;background:#20394f;cursor:pointer}
+    .gallery-item img{transition:transform .35s ease}
+    .gallery-item:hover img{transform:scale(1.06)}
+    
+    .matrix-wrap{overflow-x:auto;padding-bottom:10px;-webkit-overflow-scrolling:touch}
+    .matrix{border-collapse:separate;border-spacing:6px;width:100%;min-width:620px}
+    .matrix th{font-size:.8rem;line-height:1.15;font-weight:800;color:var(--navy);padding:10px 6px;text-align:center}
+    .matrix th:first-child{text-align:left}
+    .matrix td{height:52px;text-align:center}
+    .matrix .self{background:#e8e0d0;border-radius:8px;color:#a79b87;font-weight:800}
+
+    .badge-ally { background-color: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .badge-rival { background-color: #ffe4e6; color: #9f1239; border: 1px solid #fecdd3; }
+    .badge-ally-rival { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .badge-rival-ally { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge-neutral { background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+    .modal-backdrop{background:rgba(15,25,34,.76);backdrop-filter:blur(5px)}
+    .modal-panel{max-height:calc(86 * min(var(--vh, 1vh), 1vh));overflow:auto}
+    .choice{
+      width:100%;text-align:left;border:1px solid #d9cfbd;border-radius:10px;padding:.72rem .85rem;
+      background:#fffdf8;transition:background .15s,border .15s;
+    }
+    .choice:hover,.choice:focus-visible{border-color:var(--gold);background:#fff7e4;outline:none}
+    .choice.correct{background:#dcebdd;border-color:#70a47b;color:#225a31}
+    .choice.incorrect{background:#f4dedb;border-color:#c76f68;color:#852a25}
+    .choice:disabled{cursor:default}
+    .feedback{min-height:24px;font-weight:700;font-size:.86rem}
+    @media(max-width:640px){
+      .hero{min-height:auto}
+      .matrix{min-width:580px}
+    }
+  </style>
+ </head>
+ <body id="top" class="w-full paper-grain">
+  <header class="hero w-full flex items-center">
+   <div class="w-full max-w-6xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
+    <div class="mb-8">
+      <p class="text-xs text-amber-300/90 mt-1 font-semibold">Створено Ольгою Герінбург</p>
+    </div>
+    <div class="max-w-4xl">
+     <p data-template-id="hero-kicker" class="canva-text section-kicker !text-amber-300 mb-4">всесвітня історія (кін. ХІХ – поч. ХХ ст.)</p>
+     <div class="hero-rule mb-6"></div>
+     <h1 data-template-id="hero-title" class="canva-text text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] mb-5">Міжнародні відносини кінця ХІХ – початку ХХ століття</h1>
+     <p data-template-id="hero-subtitle" class="canva-text max-w-2xl text-base sm:text-lg leading-7 sm:leading-8 text-stone-200">Інтерактивний огляд розвитку міжнародної політики, формування військово-політичних блоків, колоніального суперництва та гонки озброєнь.</p>
+     
+     <div class="flex flex-col sm:flex-row flex-wrap gap-3 mt-8">
+       <a href="#block-one" class="px-5 py-3 rounded-md font-bold bg-amber-500 text-slate-950 text-center transition hover:bg-amber-400 shadow-md">Ключові характеристики</a>
+       <a href="#block-two" class="px-5 py-3 rounded-md font-bold bg-slate-800 text-amber-300 border border-amber-500/40 text-center hover:bg-slate-700 transition shadow-md">Матриця відносин</a>
+       <a href="#quiz-three" class="px-5 py-3 rounded-md font-bold bg-amber-600 text-slate-950 text-center transition hover:bg-amber-500 shadow-md">Підсумковий тест</a>
+     </div>
+    </div>
+   </div>
+  </header>
+
+  <main>
+   <section id="block-one" class="w-full max-w-6xl mx-auto px-5 sm:px-8 py-12 sm:py-20">
+    <p data-template-id="block-one-kicker" class="canva-text section-kicker mb-3">Розділ 1</p>
+    <h2 data-template-id="block-one-title" class="canva-text text-3xl sm:text-5xl font-bold leading-tight max-w-4xl">Ключові особливості міжнародних відносин</h2>
+    <p data-template-id="block-one-intro" class="canva-text max-w-3xl mt-4 leading-7 text-slate-600">Натисніть на будь-яку картку нижче, щоб відкрити детальніше пояснення історичних процесів зазначеного періоду.</p>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-8">
+      <button type="button" class="feature-card rounded-sm p-5 text-left" data-info="colonialism" aria-haspopup="dialog"> 
+        <span class="number-stamp">01</span> 
+        <h3 data-template-id="feature-colonialism-title" class="canva-text text-xl font-bold mt-5">Колоніалізм та імперіалізм</h3>
+        <p data-template-id="feature-colonialism-short" class="canva-text text-sm leading-6 mt-2 text-slate-600">Завершення поділу світу між великими державами.</p>
+      </button> 
+      <button type="button" class="feature-card rounded-sm p-5 text-left" data-info="competition" aria-haspopup="dialog"> 
+        <span class="number-stamp">02</span> 
+        <h3 data-template-id="feature-competition-title" class="canva-text text-xl font-bold mt-5">Економічне суперництво</h3>
+        <p data-template-id="feature-competition-short" class="canva-text text-sm leading-6 mt-2 text-slate-600">Боротьба за ринки збуту та джерела сировини.</p>
+      </button> 
+      <button type="button" class="feature-card rounded-sm p-5 text-left" data-info="balance" aria-haspopup="dialog"> 
+        <span class="number-stamp">03</span> 
+        <h3 data-template-id="feature-balance-title" class="canva-text text-xl font-bold mt-5">Рівновага сил</h3>
+        <p data-template-id="feature-balance-short" class="canva-text text-sm leading-6 mt-2 text-slate-600">Прагнення недопустити гегемонії однієї держави.</p>
+      </button> 
+      <button type="button" class="feature-card rounded-sm p-5 text-left" data-info="arms" aria-haspopup="dialog"> 
+        <span class="number-stamp">04</span> 
+        <h3 data-template-id="feature-arms-title" class="canva-text text-xl font-bold mt-5">Гонка озброєнь</h3>
+        <p data-template-id="feature-arms-short" class="canva-text text-sm leading-6 mt-2 text-slate-600">Стрімке нарощування армій та нові види зброї.</p>
+      </button> 
+      <button type="button" class="feature-card rounded-sm p-5 text-left" data-info="alliances" aria-haspopup="dialog"> 
+        <span class="number-stamp">05</span> 
+        <h3 data-template-id="feature-alliances-title" class="canva-text text-xl font-bold mt-5">Формування блоків</h3>
+        <p data-template-id="feature-alliances-short" class="canva-text text-sm leading-6 mt-2 text-slate-600">Утворення військово-політичних союзів.</p>
+      </button>
+    </div>
+
+    <div class="mt-14">
+     <div class="flex flex-wrap justify-between items-end gap-4 mb-5">
+      <div>
+       <p data-template-id="gallery-kicker" class="canva-text section-kicker mb-2">Галерея</p>
+       <h3 data-template-id="gallery-title" class="canva-text text-2xl sm:text-3xl font-bold">Історичні ілюстрації</h3>
+      </div>
+      <p data-template-id="gallery-note" class="canva-text text-sm text-slate-500">(натисніть на зображення, щоб розгорнути)</p>
+     </div>
+
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <button type="button" class="gallery-item rounded-sm text-left" data-image="image-balance"> 
+        <img src="https://api.nga.gov/iiif/05f9fdeb-adf7-4de5-b6c6-5257899e0c4d/full/!800,800/0/default.jpg" alt="Оноре Дом`є «Європейська рівновага». Карикатура 1867 р." data-template-id="image-balance" loading="lazy" class="canva-image w-full h-56 sm:h-64 object-cover object-top"> 
+        <span data-template-id="image-balance-caption" class="canva-text absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-slate-950/90 to-transparent text-white font-bold text-sm">Оноре Дом`є «Європейська рівновага». Карикатура 1867 р.</span> 
+      </button> 
+      
+      <button type="button" class="gallery-item rounded-sm text-left" data-image="image-maxim"> 
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Metralhadora_1884.jpg" alt="Гайрем Максим зі своїм кулеметом" data-template-id="image-maxim" loading="lazy" class="canva-image w-full h-56 sm:h-64 object-cover"> 
+        <span data-template-id="image-maxim-caption" class="canva-text absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-slate-950/90 to-transparent text-white font-bold text-sm">Гайрем Максим зі своїм кулеметом</span> 
+      </button> 
+      
+      <button type="button" class="gallery-item rounded-sm text-left" data-image="image-dreadnought"> 
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/HMS_Dreadnought_1906_H61017.jpg/1280px-HMS_Dreadnought_1906_H61017.jpg" alt="Лінійний корабель «Дредноут» у 1906-1907 роках" data-template-id="image-dreadnought" loading="lazy" class="canva-image w-full h-56 sm:h-64 object-cover"> 
+        <span data-template-id="image-dreadnought-caption" class="canva-text absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-slate-950/90 to-transparent text-white font-bold text-sm">Лінійний корабель «Дредноут» у 1906-1907 роках</span> 
+      </button>
+     </div>
+    </div>
+
+    <!-- ТЕСТ 1 -->
+    <section class="mt-14" aria-labelledby="quiz-one-title">
+      <p data-template-id="quiz-one-kicker" class="canva-text section-kicker mb-2">Перевірка знань</p>
+      <h3 id="quiz-one-title" data-template-id="quiz-one-title-text" class="canva-text text-3xl font-bold">Тест 1: Основні тенденції</h3>
+      <p data-template-id="quiz-one-intro" class="canva-text mt-2 text-slate-600">Оберіть правильний варіант відповіді для кожного запитання:</p>
+
+      <div id="quiz-one" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+        <article class="quiz-card rounded-sm p-5" data-quiz="one" data-correct="b">
+          <h4 class="font-bold">1. Яке поняття означає монополістичну стадію розвитку капіталізму та політику встановлення контролю над іншими країнами?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">Колоніалізм</button>
+            <button class="choice" data-answer="b">Імперіалізм</button>
+            <button class="choice" data-answer="c">Протекціонізм</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+
+        <article class="quiz-card rounded-sm p-5" data-quiz="one" data-correct="c">
+          <h4 class="font-bold">2. Між якими державами існували найгостріші суперечності через колоніальний поділ світу та економічну конкуренцію на початку ХХ ст.?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">Велика Британія та Франція</button>
+            <button class="choice" data-answer="b">Франція та Німеччина</button>
+            <button class="choice" data-answer="c">Велика Британія та Німеччина</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+
+        <article class="quiz-card rounded-sm p-5" data-quiz="one" data-correct="a">
+          <h4 class="font-bold">3. Чого прагнули уникнути європейські держави, підтримуючи систему «європейської рівноваги»?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">Домінування однієї держави над іншими</button>
+            <button class="choice" data-answer="b">Виникнення нових військово-політичних союзів</button>
+            <button class="choice" data-answer="c">Посилення дипломатичних відносин між державами</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+
+        <article class="quiz-card rounded-sm p-5" data-quiz="one" data-correct="b">
+          <h4 class="font-bold">4. На скільки зросла чисельність європейських армій у 1901–1913 рр.?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">Приблизно на 10%</button>
+            <button class="choice" data-answer="b">Приблизно на 30%</button>
+            <button class="choice" data-answer="c">Приблизно на 80%</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+
+        <article class="quiz-card rounded-sm p-5" data-quiz="one" data-correct="c">
+          <h4 class="font-bold">5. Який винахід став символом нового переозброєння армій?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">Магазинна гвинтівка</button>
+            <button class="choice" data-answer="b">Бездимний порох</button>
+            <button class="choice" data-answer="c">Станковий кулемет «Максим»</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+
+        <article class="quiz-card rounded-sm p-5" data-quiz="one" data-correct="a">
+          <h4 class="font-bold">6. Яку перевагу держави прагнули отримати, об'єднуючись у військово-політичні блоки?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">Забезпечити можливість спільних політичних і військових дій</button>
+            <button class="choice" data-answer="b">Уникнути участі в можливих міжнародних конфліктах</button>
+            <button class="choice" data-answer="c">Посилити власну безпеку завдяки підтримці союзників</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+      </div>
+
+      <p id="quiz-one-result" class="mt-5 font-bold text-lg text-emerald-800" aria-live="polite"></p>
+    </section>
+
+   <!-- БЛОК 2: МАТРИЦЯ ВІДНОСИН -->
+   <section id="block-two" class="w-full bg-[#20394f] text-[#fffaf0] py-12 sm:py-20">
+    <div class="w-full max-w-6xl mx-auto px-5 sm:px-8">
+     <p data-template-id="block-two-kicker" class="canva-text section-kicker !text-amber-300 mb-3">Розділ 2</p>
+     <h2 data-template-id="block-two-title" class="canva-text text-3xl sm:text-5xl font-bold leading-tight max-w-4xl">Взаємовідносини провідних держав</h2>
+     <p data-template-id="block-two-intro" class="canva-text max-w-3xl mt-4 leading-7 text-slate-200">Інтерактивна таблиця описує стан стосунків між ключовими імперіями перед початком Першої світової війни.</p>
+     
+     <aside data-template-id="legend-panel" class="canva-panel mt-8 rounded-sm p-4 sm:p-5 bg-[#294960]">
+      <h3 data-template-id="legend-title" class="canva-text font-bold text-lg sm:text-xl mb-4 text-amber-300">Легенда позначень у таблиці</h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-xs">
+        <div class="flex items-center gap-2 p-2 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-900 font-medium">
+            <span class="text-emerald-600 font-bold text-base">♥</span>
+            <span>Союзники</span>
+        </div>
+        <div class="flex items-center gap-2 p-2 rounded-lg bg-rose-50 border border-rose-100 text-rose-900 font-medium">
+            <span class="text-rose-600 font-bold text-base">♠</span>
+            <span>Суперники</span>
+        </div>
+        <div class="flex items-center gap-2 p-2 rounded-lg bg-amber-50 border border-amber-100 text-amber-900 font-medium">
+            <span class="text-amber-600 font-bold text-base">♥ → ♠</span>
+            <span>Від союзу до ворожнечі</span>
+        </div>
+        <div class="flex items-center gap-2 p-2 rounded-lg bg-blue-50 border border-blue-100 text-blue-900 font-medium">
+            <span class="text-blue-600 font-bold text-base">♠ → ♥</span>
+            <span>Від ворожнечі до союзу</span>
+        </div>
+        <div class="flex items-center gap-2 p-2 rounded-lg bg-slate-100 border border-slate-200 text-slate-800 font-medium">
+            <span class="text-slate-600 font-bold text-base">+/-</span>
+            <span>Нейтральні / Складні</span>
+        </div>
+      </div>
+     </aside>
+
+     <div class="mt-8 bg-[#fffaf0] rounded-sm p-3 sm:p-5 text-[#17212b] shadow-2xl">
+      <p data-template-id="matrix-help" class="canva-text text-xs sm:text-sm text-slate-600 mb-3">Клацніть на будь-яку позначку у таблиці, щоб відкрити детальний коментар про відносини між двома країнами:</p>
+      <div class="matrix-wrap">
+       <table class="matrix" aria-label="Матриця відносин між європейськими державами">
+        <thead>
+         <tr>
+          <th>Країна</th>
+          <th>Німеччина</th>
+          <th>В. Британія</th>
+          <th>Росія</th>
+          <th>Франція</th>
+          <th>Австро-Угорщина</th>
+          <th>Італія</th>
+         </tr>
+        </thead>
+        <tbody id="matrix-body">
+         <!-- Динамічно рендериться скриптом -->
+        </tbody>
+       </table>
+      </div>
+     </div>
+
+     <!-- ТЕСТ 2 -->
+     <section class="mt-14" aria-labelledby="quiz-two-title">
+      <p data-template-id="quiz-two-kicker" class="canva-text section-kicker !text-amber-300 mb-2">Перевірка знань</p>
+      <h3 id="quiz-two-title" data-template-id="quiz-two-title-text" class="canva-text text-3xl font-bold">Тест 2: Відносини між державами</h3>
+      <p data-template-id="quiz-two-intro" class="canva-text mt-2 text-slate-200">Перевірте свої знання про конфлікти й союзи:</p>
+      <div id="quiz-two" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6 text-[#17212b]">
+       <article class="quiz-card rounded-sm p-5" data-quiz="two" data-correct="a">
+        <h4 class="font-bold">1. Яка країна прагнула реваншу за втрату Ельзасу і Лотарингії?</h4>
+        <div class="mt-4 space-y-2">
+         <button class="choice" data-answer="a">Франція</button><button class="choice" data-answer="b">Італія</button><button class="choice" data-answer="c">Росія</button>
+        </div>
+        <p class="feedback mt-3" aria-live="polite"></p>
+       </article>
+       <article class="quiz-card rounded-sm p-5" data-quiz="two" data-correct="c">
+        <h4 class="font-bold">2. Хто був основным суперником Росії на Балканах?</h4>
+        <div class="mt-4 space-y-2">
+         <button class="choice" data-answer="a">Франція</button><button class="choice" data-answer="b">Велика Британія</button><button class="choice" data-answer="c">Австро-Угорщина</button>
+        </div>
+        <p class="feedback mt-3" aria-live="polite"></p>
+       </article>
+       <article class="quiz-card rounded-sm p-5" data-quiz="two" data-correct="b">
+        <h4 class="font-bold">3. Який курс проводила Велика Британія до початку ХХ ст.?</h4>
+        <div class="mt-4 space-y-2">
+         <button class="choice" data-answer="a">Постійні союзи з усіма країнами</button><button class="choice" data-answer="b">«Блискучу ізоляцію»</button><button class="choice" data-answer="c">Повну відмову від колоній</button>
+        </div>
+        <p class="feedback mt-3" aria-live="polite"></p>
+       </article>
+       <article class="quiz-card rounded-sm p-5" data-quiz="two" data-correct="a">
+        <h4 class="font-bold">4. Які держави стали союзниками після угоди 1904 року?</h4>
+        <div class="mt-4 space-y-2">
+         <button class="choice" data-answer="a">Франція і Велика Британія</button><button class="choice" data-answer="b">Німеччина і Франція</button><button class="choice" data-answer="c">Росія і Австро-Угорщина</button>
+        </div>
+        <p class="feedback mt-3" aria-live="polite"></p>
+       </article>
+       <article class="quiz-card rounded-sm p-5" data-quiz="two" data-correct="c">
+        <h4 class="font-bold">5. Чому Італія зблизилася з Німеччиною?</h4>
+        <div class="mt-4 space-y-2">
+         <button class="choice" data-answer="a">Через боротьбу за Балкани</button><button class="choice" data-answer="b">Через союз із Росією</button><button class="choice" data-answer="c">Через протистояння з Францією</button>
+        </div>
+        <p class="feedback mt-3" aria-live="polite"></p>
+       </article>
+       <article class="quiz-card rounded-sm p-5" data-quiz="two" data-correct="b">
+        <h4 class="font-bold">6. Що найбільше загострило англо-німецькі відносини?</h4>
+        <div class="mt-4 space-y-2">
+         <button class="choice" data-answer="a">Спільна боротьба проти Франції</button><button class="choice" data-answer="b">Колоніальне, економічне й морське суперництво</button><button class="choice" data-answer="c">Спільна війна проти Японії</button>
+        </div>
+        <p class="feedback mt-3" aria-live="polite"></p>
+       </article>
+      </div>
+      <p id="quiz-two-result" class="mt-5 font-bold text-lg text-amber-200" aria-live="polite"></p>
+     </section>
+
+     <!-- ТЕСТ 3: ПОГЛИБЛЕНИЙ / АНАЛІТИЧНИЙ РІВЕНЬ -->
+     <section id="quiz-three" class="mt-14" aria-labelledby="quiz-three-title">
+      <p data-template-id="quiz-three-kicker" class="canva-text section-kicker !text-amber-300 mb-2">Перевірка знань • Високий рівень</p>
+      <h3 id="quiz-three-title" data-template-id="quiz-three-title-text" class="canva-text text-3xl font-bold">Підсумковий тест</h3>
+      <p data-template-id="quiz-three-intro" class="canva-text mt-2 text-slate-200">Складні запитання для перевірки розуміння причинно-наслідкових зв'язків та ключових міжнародних договорів:</p>
+
+      <div id="quiz-three" class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6 text-[#17212b]">
+        <article class="quiz-card rounded-sm p-5" data-quiz="three" data-correct="a">
+          <h4 class="font-bold">1. Які країни утворили військово-політичний блок «Троїстий союз» у 1882 році?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">Німеччина, Австро-Угорщина, Італія</button>
+            <button class="choice" data-answer="b">Велика Британія, Франція, Росія</button>
+            <button class="choice" data-answer="c">Німеччина, Росія, Австро-Угорщина</button>
+            <button class="choice" data-answer="d">Франція, Італія, Велика Британія</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+
+        <article class="quiz-card rounded-sm p-5" data-quiz="three" data-correct="b">
+          <h4 class="font-bold">2. Що стало головною причиною непримиренно ворожого ставлення Франції до Німеччини наприкінці ХІХ ст.?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">Захоплення Німеччиною Суецького каналу</button>
+            <button class="choice" data-answer="b">Втрата Ельзасу та Лотарингії внаслідок поразки у війні 1870–1871 рр.</button>
+            <button class="choice" data-answer="c">Морська блокада французьких портів німецьким флотом</button>
+            <button class="choice" data-answer="d">Відмова Німеччини надавати кредити французькому банку</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+
+        <article class="quiz-card rounded-sm p-5" data-quiz="three" data-correct="c">
+          <h4 class="font-bold">3. Чому Велика Британія відмовилася від політики «блискучої ізоляції» та пішла на зближення з Францією і Росією?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">Через втрату всіх своїх колоній в Азії</button>
+            <button class="choice" data-answer="b">Через прагнення захопити території Північної Америки</button>
+            <button class="choice" data-answer="c">Через загрозу з боку Німеччини, її стрімкий економічний ріст та будівництво флоту</button>
+            <button class="choice" data-answer="d">Через підписання союзу з Османською імперією</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+
+        <article class="quiz-card rounded-sm p-5" data-quiz="three" data-correct="b">
+          <h4 class="font-bold">4. На ґрунті яких суперечностей розпалося союзництво між Російською імперією та Австро-Угорщиною?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">Через колоніальний поділ Північної Африки</button>
+            <button class="choice" data-answer="b">Через боротьбу за вплив та панування на Балканському півострові</button>
+            <button class="choice" data-answer="c">Через митну війну у басейні Балтійського моря</button>
+            <button class="choice" data-answer="d">Через суперництво за контроль над Індією</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+
+        <article class="quiz-card rounded-sm p-5" data-quiz="three" data-correct="a">
+          <h4 class="font-bold">5. Яка подія стала безпосереднім приводом для вступу Італії до союзу з Німеччиною у 1882 році?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">Захоплення Францією Тунісу в 1881 р., на який претендувала Італія</button>
+            <button class="choice" data-answer="b">Напад Російської імперії на італійські території</button>
+            <button class="choice" data-answer="c">Укладення Англією угоди з Османською імперією</button>
+            <button class="choice" data-answer="d">Німецька ультимативна вимога про передачу Савойї</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+
+        <article class="quiz-card rounded-sm p-5" data-quiz="three" data-correct="d">
+          <h4 class="font-bold">6. У якому році підписанням англо-російської угоди було остаточно завершено формування блоку «Антанта»?</h4>
+          <div class="mt-4 space-y-2">
+            <button class="choice" data-answer="a">1882 р.</button>
+            <button class="choice" data-answer="b">1892 р.</button>
+            <button class="choice" data-answer="c">1904 р.</button>
+            <button class="choice" data-answer="d">1907 р.</button>
+          </div>
+          <p class="feedback mt-3" aria-live="polite"></p>
+        </article>
+      </div>
+      <p id="quiz-three-result" class="mt-5 font-bold text-lg text-amber-200" aria-live="polite"></p>
+     </section>
+
+    </div>
+   </section>
+  </main>
+
+  <!-- ФУТЕР З АВТОРСТВОМ -->
+  <footer data-template-id="footer-section" class="canva-footer w-full bg-[#17212b] text-stone-200 py-8 border-t border-slate-800">
+   <div class="max-w-6xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+    <div>
+      <p data-template-id="footer-text" class="canva-text text-sm">Міжнародні відносини кінця ХІХ – початку ХХ століття.</p>
+      <p class="text-xs text-amber-300/90 mt-1 font-semibold">Створено Ольгою Герінбург</p>
+    </div>
+    <a href="#top" data-template-id="footer-link" class="canva-link text-sm font-bold text-amber-300 hover:underline">На початок ↑</a>
+   </div>
+  </footer>
+
+  <div id="info-modal" class="hidden fixed inset-0 z-50 modal-backdrop p-4 sm:p-8 items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+   <div class="modal-panel w-full max-w-2xl rounded-sm bg-[#fffaf0] text-[#17212b] shadow-2xl p-6 sm:p-8 relative">
+    <button type="button" class="absolute top-4 right-4 p-2 rounded hover:bg-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-600" data-close-modal aria-label="Закрити пояснення">
+      <i data-lucide="x"></i>
+    </button>
+    <p id="modal-label" class="section-kicker mb-2"></p>
+    <h2 id="modal-title" class="text-2xl sm:text-3xl font-bold pr-10"></h2>
+    <div id="modal-body" class="mt-5 text-slate-700 leading-7 text-sm sm:text-base"></div>
+   </div>
+  </div>
+
+  <div id="image-modal" class="hidden fixed inset-0 z-50 modal-backdrop p-4 sm:p-8 items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="image-modal-caption">
+   <div class="relative max-w-6xl w-full flex flex-col items-center">
+    <button type="button" class="absolute -top-1 right-0 sm:right-2 z-10 rounded-full bg-white p-2 text-[#17212b] shadow-lg focus:outline-none focus:ring-4 focus:ring-amber-300" data-close-image aria-label="Закрити зображення">
+      <i data-lucide="x"></i>
+    </button> 
+    <img id="expanded-image" class="max-w-full max-h-[72vh] object-contain rounded-sm shadow-2xl" alt="">
+    <p id="image-modal-caption" class="mt-4 text-center text-white font-bold text-sm sm:text-base"></p>
+   </div>
+  </div>
+
+  <!-- Плаваюча кнопка "Вгору" -->
+  <a id="scroll-to-top" href="#top" aria-label="До початку сторінки" class="hidden fixed bottom-6 right-6 z-40 bg-amber-500 hover:bg-amber-400 text-slate-950 p-3.5 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 border border-amber-300 flex items-center justify-center">
+    <i data-lucide="arrow-up" class="w-6 h-6"></i>
+  </a>
+
+  <script>
+    const info = {
+      colonialism:{
+        label:"Характеристика 01",
+        title:"Колоніалізм та імперіалізм",
+        body: `<p>На межі століть завершувався поділ світу між колоніальними імперіями. Колонії давали сировину, ринки збуту та можливості для вкладення капіталу.</p>
+        
+        <div class="my-3 p-3 bg-[#f4e7c9] border-l-4 border-[#c79643] rounded-r text-[#17212b] shadow-sm">
+          <b>КОЛОНІАЛІЗМ</b> — політичне, економічне й культурне поневолення слаборозвинених країн більш розвиненими.
+        </div>
+
+        <p class="my-3 text-slate-700">Найбільше колоній розташовувалося в Азії й Африці.</p>
+
+        <div class="my-3 p-3 bg-[#f4e7c9] border-l-4 border-[#c79643] rounded-r text-[#17212b] shadow-sm">
+          <b>ІМПЕРІАЛІЗМ</b> — монополістична стадія розвитку капіталізму; політика встановлення контролю над слабшими країнами.
+        </div>
+
+        <p class="font-bold mt-4 mb-1">Основні риси імперіалізму:</p>
+        <ul class="list-disc pl-5 space-y-1 text-slate-700">
+          <li>Панування монополій та фінансового капіталу;</li>
+          <li>Активний вивіз капіталу за кордон;</li>
+          <li>Економічний та територіальний поділ світу між найбільшими державами.</li>
+        </ul>`
+      },
+      competition:{
+        label:"Характеристика 02",
+        title:"Економічне та колоніальне суперництво",
+        body:"<p>Стрімкий промисловий розвиток посилив боротьбу за сировину, ринки збуту й прибуткові капіталовкладення. Держави поступово переходили від вільної конкуренції до поділу міжнародних ринків.</p><ul class='list-disc pl-5 mt-3 space-y-2'><li>Головні вузли суперечностей:</li><li><b>Велика Британія — Німеччина:</b> Німеччина випередила Британію за обсягом промисловості й вимагала переділу колоній на свою користь</li><li><b>Франція — Німеччина:</b> Франція прагнула реваншу за поразку у війні 1870–1871 рр. та повернення Ельзасу й Лотарингії.</li></ul>"
+      },
+      balance:{
+        label:"Характеристика 03",
+        title:"Європейська рівновага сил",
+        body: `<p>Великі держави прагнули не допустити переваги будь-якої однієї країни в Європі. Статус великої держави визначався військово-політичним потенціалом і міжнародним впливом.</p>
+        <div class="my-3 p-3 bg-[#f4e7c9] border-l-4 border-[#c79643] rounded-r text-[#17212b] shadow-sm">
+          <b>ВЕЛИКА ДЕРЖАВА</b> — держава, яка завдяки своєму військово-політичному потенціалу справляє великий вплив на систему міжнародних та міжнародно-правових відносин.
+        </div>
+
+        <p class="font-bold mt-4 mb-2 text-[#20394f]">Еволюція складу «Великих держав»:</p>
+
+        <div class="overflow-x-auto my-3">
+          <table class="w-full text-xs sm:text-sm border-collapse border border-[#d8cfbd] bg-[#fffdf8]">
+            <thead>
+              <tr class="bg-[#e8e0d0] text-[#20394f]">
+                <th class="border border-[#d8cfbd] p-2 text-center font-bold">1815<br><span class="font-normal text-slate-600">(Віденський конгрес)</span></th>
+                <th class="border border-[#d8cfbd] p-2 text-center font-bold">1878<br><span class="font-normal text-slate-600">(Берлінський конгрес)</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border border-[#d8cfbd] p-2 align-top">
+                  <ul class="list-disc pl-4 space-y-1 text-slate-700">
+                    <li>Британська імперія</li>
+                    <li>Російська імперія</li>
+                    <li>Австрійська імперія</li>
+                    <li>Пруссія</li>
+                    <li>Франція</li>
+                  </ul>
+                </td>
+                <td class="border border-[#d8cfbd] p-2 align-top">
+                  <ul class="list-disc pl-4 space-y-1 text-slate-700">
+                    <li>Британська імперія</li>
+                    <li>Російська імперія</li>
+                    <li>Австро-Угорська імперія</li>
+                    <li>Німецька імперія</li>
+                    <li>Франція</li>
+                    <li>Королівство Італія</li>
+                    <li>США</li>
+                    <li>Японія</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>`
+      },
+      arms:{
+        label:"Характеристика 04",
+        title:"Гонка озброєнь та науково-технічний прогрес",
+        body:"<p>Напруженість у відносинах супроводжувалася небувалим зростанням військово-промислового потенціалу.</p><ul class='list-disc pl-5 mt-3 space-y-2'><li>У 1901–1913 роках європейські армії збільшилися приблизно <b>на 30%.</b></li><li>Відбулося <b>переозброєння армій</b> на основі досягнень науково-технічного прогресу: з’явилися кулемети «Максим», швидкострільні гармати, бездимний порох і лінійні кораблі-дредноути.</li><li>Лідером гонки озброєнь була <b>Німеччина</b>, яка активно зміцнювала армію та флот, кидаючи виклик британській морській перевазі.</li></ul>"
+      },
+      alliances:{
+        label:"Характеристика 05",
+        title:"Формування військово-політичних блоків",
+        body: `<p>Наприкінці ХІХ століття дедалі важливішими ставали союзи держав, створені для спільного захисту інтересів.</p>
+        
+        <div class="my-3 p-3 bg-[#f4e7c9] border-l-4 border-[#c79643] rounded-r text-[#17212b] shadow-sm">
+          <b>ВІЙСЬКОВО-ПОЛІТИЧНИЙ БЛОК</b> — військово-політичний союз або угода держав з метою спільних дій для вирішення загальних політичних, економічних і військових завдань.
+        </div>
+
+        <div class="my-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 bg-[#fffdf8] border border-[#d8cfbd] rounded shadow-sm text-center">
+            <p class="font-bold text-[#17212b] mb-2 text-base">Утворення Троїстого союзу</p>
+            <svg viewBox="0 0 320 200" class="w-full h-auto mx-auto max-w-[280px]">
+              <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 1 L 10 5 L 0 9 z" fill="#c71c1c"/>
+                </marker>
+              </defs>
+
+              <line x1="190" y1="35" x2="115" y2="35" stroke="#c71c1c" stroke-width="2.5" marker-end="url(#arrow)"/>
+              <text x="150" y="27" font-size="12" font-weight="bold" fill="#17212b" text-anchor="middle">1882</text>
+
+              <line x1="225" y1="60" x2="180" y2="140" stroke="#c71c1c" stroke-width="2.5" marker-end="url(#arrow)"/>
+              <text x="215" y="105" font-size="12" font-weight="bold" fill="#17212b" text-anchor="middle" transform="rotate(-60, 215, 105)">1879</text>
+
+              <line x1="140" y1="140" x2="95" y2="60" stroke="#c71c1c" stroke-width="2.5" marker-end="url(#arrow)"/>
+              <text x="105" y="105" font-size="12" font-weight="bold" fill="#17212b" text-anchor="middle" transform="rotate(60, 105, 105)">1882</text>
+
+              <rect x="15" y="15" width="90" height="40" fill="#61c7f0" rx="2"/>
+              <text x="60" y="40" font-size="13" font-weight="bold" fill="#17212b" text-anchor="middle">Італія</text>
+
+              <rect x="195" y="15" width="110" height="40" fill="#61c7f0" rx="2"/>
+              <text x="250" y="32" font-size="12" font-weight="bold" fill="#17212b" text-anchor="middle">Австро-</text>
+              <text x="250" y="46" font-size="12" font-weight="bold" fill="#17212b" text-anchor="middle">Угорщина</text>
+
+              <rect x="110" y="145" width="100" height="40" fill="#61c7f0" rx="2"/>
+              <text x="160" y="170" font-size="13" font-weight="bold" fill="#17212b" text-anchor="middle">Німеччина</text>
+            </svg>
+          </div>
+
+          <div class="p-4 bg-[#fffdf8] border border-[#d8cfbd] rounded shadow-sm text-center">
+            <p class="font-bold text-[#17212b] mb-2 text-base">Утворення Антанти</p>
+            <svg viewBox="0 0 320 200" class="w-full h-auto mx-auto max-w-[280px]">
+              <defs>
+                <marker id="arrow2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 1 L 10 5 L 0 9 z" fill="#c71c1c"/>
+                </marker>
+              </defs>
+
+              <line x1="105" y1="35" x2="205" y2="35" stroke="#c71c1c" stroke-width="2.5" marker-end="url(#arrow2)"/>
+              <text x="155" y="27" font-size="12" font-weight="bold" fill="#17212b" text-anchor="middle">1891</text>
+
+              <line x1="240" y1="60" x2="195" y2="140" stroke="#c71c1c" stroke-width="2.5" marker-end="url(#arrow2)"/>
+              <text x="230" y="105" font-size="12" font-weight="bold" fill="#17212b" text-anchor="middle" transform="rotate(-60, 230, 105)">1904</text>
+
+              <line x1="125" y1="140" x2="80" y2="60" stroke="#c71c1c" stroke-width="2.5" marker-end="url(#arrow2)"/>
+              <text x="90" y="105" font-size="12" font-weight="bold" fill="#17212b" text-anchor="middle" transform="rotate(60, 90, 105)">1907</text>
+
+              <rect x="15" y="15" width="90" height="40" fill="#61c7f0" rx="2"/>
+              <text x="60" y="40" font-size="13" font-weight="bold" fill="#17212b" text-anchor="middle">Росія</text>
+
+              <rect x="210" y="15" width="90" height="40" fill="#61c7f0" rx="2"/>
+              <text x="255" y="40" font-size="13" font-weight="bold" fill="#17212b" text-anchor="middle">Франція</text>
+
+              <rect x="105" y="145" width="110" height="40" fill="#61c7f0" rx="2"/>
+              <text x="160" y="162" font-size="12" font-weight="bold" fill="#17212b" text-anchor="middle">Велика</text>
+              <text x="160" y="176" font-size="12" font-weight="bold" fill="#17212b" text-anchor="middle">Британія</text>
+            </svg>
+          </div>
+        </div>
+
+        <ul class="list-disc pl-5 mt-3 space-y-1.5 text-slate-700">
+          <li>Союзи мали посилити позиції держав у суперництві з противниками.</li>
+          <li>Поділ Європи на блоки став одним із чинників майбутнього великого конфлікту.</li>
+        </ul>`
+      }
+    };
+
+    const countries = [
+        { id: 'DE', name: 'Німецька імперія', short: 'Німеччина' },
+        { id: 'GB', name: 'Велика Британія', short: 'В. Британія' },
+        { id: 'RU', name: 'Російська імперія', short: 'Росія' },
+        { id: 'FR', name: 'Французька республіка', short: 'Франція' },
+        { id: 'AH', name: 'Австро-Угорська імперія', short: 'Австро-Угорщина' },
+        { id: 'IT', name: 'Королівство Італія', short: 'Італія' }
+    ];
+
+    const relationTypes = {
+        '♥': { label: 'Союзники', symbol: '♥', badgeClass: 'badge-ally', modalBadgeClass: 'bg-emerald-100 text-emerald-800 border border-emerald-300' },
+        '♠': { label: 'Суперники', symbol: '♠', badgeClass: 'badge-rival', modalBadgeClass: 'bg-rose-100 text-rose-800 border border-rose-300' },
+        '♥ → ♠': { label: 'Від союзу до ворожнечі', symbol: '♥ → ♠', badgeClass: 'badge-ally-rival', modalBadgeClass: 'bg-amber-100 text-amber-800 border border-amber-300' },
+        '♠ → ♥': { label: 'Від суперництва до союзництва', symbol: '♠ → ♥', badgeClass: 'badge-rival-ally', modalBadgeClass: 'bg-blue-100 text-blue-800 border border-blue-300' },
+        '+/-': { label: 'Нейтральні / Складні', symbol: '+/-', badgeClass: 'badge-neutral', modalBadgeClass: 'bg-slate-200 text-slate-800' }
+    };
+
+    const relationsData = {
+        'DE-FR': {
+            type: '♠',
+            title: 'Німеччина — Франція',
+            points: [
+                '<strong>Франко-прусська війна (1870–1871):</strong> Франція зазнала поразки та втратила багаті провінції <strong>Ельзас і Лотарингію</strong>, а також Саар.',
+                '<strong>Прагнення реваншу:</strong> Франція прагнула повернути землі, що зробило її головним ворогам Німеччини в Європі.',
+                '<strong>Спроби ізоляції:</strong> Канцлер О. фон Бісмарк створював союзи для дипломатичної ізоляції Франції та влаштовував <strong>«військові тривоги» (1874–1875 рр.)</strong>.'
+            ]
+        },
+        'DE-GB': {
+            type: '♠',
+            title: 'Німеччина — Велика Британія',
+            points: [
+                '<strong>Економічна конкуренція:</strong> Німецька промисловість росла надшвидко, а її товари потіснили англійські на світовому ринку.',
+                '<strong>Гонка озброєнь на морі:</strong> Німеччина розпочала будівництво могутності військово-морського флоту, викликаючи загрозу пануванню Британії на морі.',
+                '<strong>Колоніальний переділ:</strong> Німеччина вимагала докорінного переділу колоній в Африці, на Близькому та Далекому Сході.'
+            ]
+        },
+        'DE-AH': {
+            type: '♥',
+            title: 'Німеччина — Австро-Угорщина',
+            points: [
+                '<strong>Етнічна та економічна близькість:</strong> Союзу сприяла спорідненість панівних націй та зростаюча залежність Відня від Берліна.',
+                '<strong>Балканський вектор:</strong> Австро-Угорщина шукала німецької підтримки для експансії на Балканах проти Росії.',
+                '<strong>Оформлення союзу:</strong> Укладено <strong>Двоїстий союз (1879 р.)</strong>, який став ядром Майбутнього <strong>Троїстого союзу</strong>.'
+            ]
+        },
+        'DE-IT': {
+            type: '♥',
+            title: 'Німеччина — Італія',
+            points: [
+                '<strong>Антифранцузька спрямованість:</strong> Італія шукала союзників через конфлікт із Францією (захоплення Францією Тунісу в 1881 р. та митна війна).',
+                '<strong>Вступ до блоку:</strong> У <strong>1882 р.</strong> Італія приєдналася до Німеччини та Австро-Угорщини, створивши <strong>Троїстий союз</strong>.'
+            ]
+        },
+        'DE-RU': {
+            type: '♥ → ♠',
+            title: 'Німеччина — Росія',
+            points: [
+                '<strong>Початковий союз (♥):</strong> Спільна участь у <em>Союзі трьох імператорів (1873, 1881)</em> та «Договорі перестраховки» (1887).',
+                '<strong>Причини розриву (♠):</strong> Росія не дозволила Німеччині розгромити Францію у 1875 р., а Німеччина не підтримала Росію на Берлінському конгресі 1878 р.',
+                '<strong>Митна війна:</strong> Обмеження імпорту товарів та відмова Німеччини надати кредити змусили Росію переорієнтуватися на Францію.'
+            ]
+        },
+        'GB-FR': {
+            type: '♠ → ♥',
+            title: 'Велика Британія — Франція',
+            points: [
+                '<strong>Суперництво (♠):</strong> Традиційні конфлікти через колонії в Африці (Суецький канал, Фашодський інцидент 1898 р.).',
+                '<strong>Зближення (♥):</strong> Загроза з боку Німеччини змусила сторони врегулювати всі колоніальні суперечки.',
+                '<strong>«Сердечна угода» (1904 р.):</strong> Підписання договору <strong>Антанта (Entente Cordiale)</strong>, який заклав основу союзницького блоку.'
+            ]
+        },
+        'GB-RU': {
+            type: '♠ → ♥',
+            title: 'Велика Британія — Росія',
+            points: [
+                '<strong>«Велика гра» (♠):</strong> Гостре суперництво за вплив у Центральній Азії, Ірані, на Балканах та Чорному морі. Британія підтримувала Японію у війні проти Росії (1904–1905).',
+                '<strong>Зближення (♥):</strong> Спільне занепокоєння агресивною політикою Німеччини.',
+                '<strong>Конвенція 1907 р.:</strong> Розмежування сфер впливу в Азії (Персія, Афганістан, Тибет), що остаточно оформило блок <strong>Антанта</strong>.'
+            ]
+        },
+        'GB-AH': {
+            type: '♠ → ♥',
+            title: 'Велика Британія — Австро-Угорщина',
+            points: [
+                'Відносини змінилися від нейтралітету за умов англійської «блискучої ізоляції» до охолодження та протистояння через міцний союз Австро-Угорщини з німецьким імперіалізмом.'
+            ]
+        },
+        'RU-AH': {
+            type: '♥ → ♠',
+            title: 'Росія — Австро-Угорщина',
+            points: [
+                '<strong>Початковий союз (♥):</strong> Спільні дії в рамках Союзів трьох імператорів.',
+                '<strong>Балканська криза (♠):</strong> Жорстке зіткнення інтересів. Росія підтримувала слов’янські проекти (Сербію), а Австро-Угорщина прагнула анексувати балканські землі (Боснію).'
+            ]
+        },
+        'RU-FR': {
+            type: '♥',
+            title: 'Росія — Франція',
+            points: [
+                '<strong>Спільні інтереси:</strong> Обопільна потреба у противазі зростаючій військовій могутності Німеччини.',
+                '<strong>Економіка та фінанси:</strong> Франція надала Росії великі кредити для промислового розвитку та залізничного будівництва.',
+                '<strong>Військовий союз:</strong> Укладення <strong>Франко-російського союзу (1891–1892 рр.)</strong> та військової конвенції.'
+            ]
+        },
+        'IT-FR': {
+            type: '♠',
+            title: 'Італія — Франція',
+            points: [
+                '<strong>Колоніальний конфлікт:</strong> Захоплення Францією Тунісу у 1881 р., на який розраховувала Італія.',
+                '<strong>Територіальні образи:</strong> Прагнення Італії повернути віддані Франції у 1860 р. Савойю та Ніццу.',
+                '<strong>Економічна війна:</strong> Тривала та виснажлива митна війна між країнами.'
+            ]
+        },
+        'RU-IT': {
+            type: '+/-',
+            title: 'Росія — Італія',
+            points: [
+                'Відносини мали нейтрально-поміркований характер без прямих гострих конфліктів чи взаємних військових зобов’язань.'
+            ]
+        },
+        'GB-IT': {
+            type: '+/-',
+            title: 'Велика Британія — Італія',
+            points: [
+                'Прагматичні відносини; Британія зберігала нейтралітет щодо прагнень Італії, не вступаючи з нею у конфронтацію.'
+            ]
+        },
+        'AH-FR': {
+            type: '+/-',
+            title: 'Австро-Угорщина — Франція',
+            points: [
+                'Відсутність спільних кордонів та прямих територіальних суперечок зумовила опосередкований характер відносин через відповідні блоки.'
+            ]
+        }
+    };
+
+    function getRelation(id1, id2) {
+        if (id1 === id2) return null;
+        const key1 = `${id1}-${id2}`;
+        const key2 = `${id2}-${id1}`;
+        return relationsData[key1] || relationsData[key2] || { type: '+/-', title: 'Нейтральні відносини', points: ['Офіційні союзницькі або ворожі зобов’язання відсутні.'] };
+    }
+
+    function renderMatrix() {
+        const tbody = document.getElementById('matrix-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        countries.forEach(c1 => {
+            const tr = document.createElement('tr');
+            
+            const th = document.createElement('th');
+            th.className = 'p-3 text-left font-semibold text-xs md:text-sm text-slate-800';
+            th.innerText = c1.short;
+            tr.appendChild(th);
+
+            countries.forEach(c2 => {
+                const td = document.createElement('td');
+                td.className = 'p-1 font-bold';
+
+                if (c1.id === c2.id) {
+                    td.innerHTML = '<div class="self flex items-center justify-center w-full h-full">—</div>';
+                } else {
+                    const rel = getRelation(c1.id, c2.id);
+                    const relType = relationTypes[rel.type];
+                    
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = `w-full h-11 rounded-lg transition transform hover:scale-105 shadow-sm font-extrabold text-sm sm:text-base ${relType.badgeClass}`;
+                    btn.innerText = relType.symbol;
+                    btn.onclick = (e) => openRelationModal(rel, relType, e.currentTarget);
+
+                    td.appendChild(btn);
+                }
+                tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+        });
+    }
+
+    const infoModal = document.getElementById("info-modal");
+    const imageModal = document.getElementById("image-modal");
+    let lastTrigger = null;
+
+    function openRelationModal(rel, relType, trigger) {
+        lastTrigger = trigger;
+        document.getElementById("modal-label").textContent = `${relType.symbol} • ${relType.label}`;
+        document.getElementById("modal-title").textContent = rel.title;
+        
+        const htmlContent = `
+            <ul class="list-disc pl-5 space-y-3 text-slate-700 mt-2">
+                ${rel.points.map(pt => `<li>${pt}</li>`).join('')}
+            </ul>
+        `;
+        document.getElementById("modal-body").innerHTML = htmlContent;
+
+        infoModal.classList.remove("hidden");
+        infoModal.classList.add("flex");
+        infoModal.querySelector("[data-close-modal]").focus();
+    }
+
+    function openInfo(key, trigger){
+      const item = info[key]; if(!item) return;
+      lastTrigger = trigger;
+      document.getElementById("modal-label").textContent = item.label;
+      document.getElementById("modal-title").textContent = item.title;
+      document.getElementById("modal-body").innerHTML = item.body;
+      infoModal.classList.remove("hidden"); infoModal.classList.add("flex");
+      infoModal.querySelector("[data-close-modal]").focus();
+    }
+    
+    function closeInfo(){
+      infoModal.classList.add("hidden");
+      infoModal.classList.remove("flex");
+      if(lastTrigger) lastTrigger.focus();
+    }
+
+    document.querySelectorAll("[data-info]").forEach(btn => btn.addEventListener("click", () => openInfo(btn.dataset.info, btn)));
+    document.querySelector("[data-close-modal]").addEventListener("click", closeInfo);
+    infoModal.addEventListener("click", e => { if(e.target === infoModal) closeInfo(); });
+
+    document.querySelectorAll("[data-image]").forEach(button => {
+      button.addEventListener("click", () => {
+        const image = button.querySelector("img"), caption = button.querySelector("span").textContent;
+        lastTrigger = button;
+        const expanded = document.getElementById("expanded-image");
+        expanded.src = image.currentSrc || image.src; expanded.alt = image.alt;
+        document.getElementById("image-modal-caption").textContent = caption;
+        imageModal.classList.remove("hidden"); imageModal.classList.add("flex");
+        imageModal.querySelector("[data-close-image]").focus();
+      });
+    });
+
+    function closeImage(){ imageModal.classList.add("hidden"); imageModal.classList.remove("flex"); if(lastTrigger) lastTrigger.focus(); }
+    document.querySelector("[data-close-image]").addEventListener("click", closeImage);
+    imageModal.addEventListener("click", e => { if(e.target === imageModal) closeImage(); });
+    document.addEventListener("keydown", e => { if(e.key === "Escape"){ closeInfo(); closeImage(); } });
+
+    function setupQuiz(id){
+      const cards = [...document.querySelectorAll(`#quiz-${id} [data-quiz]`)];
+      const result = document.getElementById(`quiz-${id}-result`);
+      cards.forEach(card => {
+        card.querySelectorAll(".choice").forEach(choice => choice.addEventListener("click", () => {
+          if(card.dataset.done) return;
+          card.dataset.done = "true";
+          const correct = card.dataset.correct, selected = choice.dataset.answer;
+          card.querySelectorAll(".choice").forEach(btn => {
+            btn.disabled = true;
+            if(btn.dataset.answer === correct) btn.classList.add("correct");
+            if(btn === choice && selected !== correct) btn.classList.add("incorrect");
+          });
+          const feedback = card.querySelector(".feedback");
+          feedback.textContent = selected === correct ? "✓ Правильно!" : "✦ Неправильно. Правильний варіант виділено зеленим.";
+          feedback.style.color = selected === correct ? "#225a31" : "#852a25";
+          const done = cards.filter(c => c.dataset.done).length;
+          if(done === cards.length){
+            const score = cards.filter(c => c.querySelector(".choice.correct") === c.querySelector(".choice.incorrect") ? false : c.querySelector(".incorrect") == null).length;
+            result.textContent = `Завершено: ${score} з ${cards.length} правильних відповідей.`;
+          }
+        }));
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderMatrix();
+        setupQuiz("one");
+        setupQuiz("two");
+        setupQuiz("three");
+        lucide.createIcons();
+
+        // Поява та зникання кнопки "Вгору" при прокрутці
+        const scrollTopBtn = document.getElementById('scroll-to-top');
+        if (scrollTopBtn) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollTopBtn.classList.remove('hidden');
+                } else {
+                    scrollTopBtn.classList.add('hidden');
+                }
+            });
+        }
+    });
+  </script>
+ </body>
+</html>
